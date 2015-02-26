@@ -8,15 +8,14 @@ class Board
   def initialize
     @grid = Array.new(8) { Array.new(8) }
     populate_board
-    display
   end
 
-  def [](x, y)
-    grid[x][y]
+  def [](y, x)
+    grid[y][x]
   end
 
-  def []=(x, y, piece)
-    self.grid[x][y] = piece
+  def []=(y, x, piece)
+    self.grid[y][x] = piece
   end
 
 
@@ -28,7 +27,7 @@ class Board
       color = (row > 2) ? :white : :black
       starting_pos.each do |pos|
         coords = [row, pos + row_adder]
-        self[*coords] = Piece.new(coords, color)
+        self[*coords] = Piece.new(self, coords, color)
       end
     end
   end
@@ -50,4 +49,13 @@ class Board
 
     str
   end
+
+  def inspect
+    display
+  end
+
+  def on_board?(pos)
+    pos.flatten.all? { |coord| coord >= 0 && coord <= 7 }
+  end
+
 end
