@@ -39,6 +39,7 @@ class Board
   def render
     str = ""
     grid.each_with_index do |row, row_i|
+      str << "#{row_i} "
       row.each_with_index do |space, col_i|
         background = ((row_i + col_i) % 2 == 0) ? :red : :black
         space_str = space.nil? ? "   " : " #{space.symbol} "
@@ -46,8 +47,7 @@ class Board
       end
       str << "\n"
     end
-
-    str
+    str << "   0  1  2  3  4  5  6  7"
   end
 
   def inspect
