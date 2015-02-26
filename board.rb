@@ -5,9 +5,9 @@ require 'byebug'
 class Board
   attr_accessor :grid
 
-  def initialize
+  def initialize( dup = false )
     @grid = Array.new(8) { Array.new(8) }
-    populate_board
+    populate_board unless dup
   end
 
   def [](y, x)
@@ -18,6 +18,18 @@ class Board
     self.grid[y][x] = piece
   end
 
+  def dup
+    dup_board = Board.new(true)
+    pieces.each do |piece|
+      dup_board[*piece.pos] = Piece.new(dup_board, piece.pos, piece.color)
+    end
+
+    dup_board
+  end
+
+  def pieces
+    grid.flatten.compact
+  end
 
   def populate_board
     starting_pos = [0,2,4,6]

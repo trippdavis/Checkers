@@ -9,9 +9,9 @@ class Piece
 
   def symbol
     if king?
-
+      "♚".colorize(color)
     else
-      "\u25CF".encode('utf-8').colorize(color)
+      "●".colorize(color)
     end
   end
 
@@ -23,11 +23,24 @@ class Piece
     color == :black ? 1 : -1
   end
 
+  def perform_moves!(move_sequence)
+    if move_sequence.size == 1
+      move = move_sequence[0]
+      perform_jump(move) unless perform_slide(move)
+    else
+      move_sequence.each do |move|
+        perform_jump(move)
+        self.pos = move
+      end
+    end
+  end
+
   def perform_slide(end_pos)
     if valid_sliding_moves.include?(end_pos)
       board[*pos] = nil
       board[*end_pos] = self
       pos = end_pos
+      promote?
       true
     else
       false
@@ -47,8 +60,10 @@ class Piece
       board[*end_pos] = self
       board[*jumped_space(pos, end_pos)] = nil
       pos = end_pos
+      promote?
       true
     else
+      raise InvalidMoveError
       false
     end
   end
@@ -65,6 +80,10 @@ class Piece
 
   def jumped_space(start_pos, end_pos)
     [(start_pos[0] + end_pos[0]) / 2, (start_pos[1] + end_pos[1]) / 2]
+  end
+
+  def promote?
+    @king = true if pos[0] == 0 || pos[0] == 7
   end
 
 end
