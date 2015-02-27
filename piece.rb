@@ -83,7 +83,7 @@ class Piece
     if valid_jumping_moves.include?(end_pos)
       board[*pos] = nil
       board[*end_pos] = self
-      board[*jumped_space(pos, end_pos)] = nil
+      board[*jumped_space(end_pos)] = nil
       self.pos = end_pos
       promote?
       true
@@ -97,17 +97,18 @@ class Piece
     y, x = pos
     valid_directions.each_with_object([]) do |direction, val_pos|
       move_pos = [y + 2 * direction[0], x + 2 * direction[1]]
-      jumped_piece = board[*jumped_space(move_pos, pos)]
+      jumped_space = jumped_space(move_pos)
+      next unless board.on_board?(jumped_space)
+      jumped_piece = board[*jumped_space]
       if board.on_board?(move_pos) && board[*move_pos].nil? &&
       jumped_piece && jumped_piece.color != color
         val_pos << move_pos
       end
     end
-
   end
 
-  def jumped_space(start_pos, end_pos)
-    [(start_pos[0] + end_pos[0]) / 2, (start_pos[1] + end_pos[1]) / 2]
+  def jumped_space(end_pos)
+    [(pos[0] + end_pos[0]) / 2, (pos[1] + end_pos[1]) / 2]
   end
 
   def promote?
