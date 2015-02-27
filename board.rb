@@ -32,11 +32,11 @@ class Board
   end
 
   def populate_board
-    starting_pos = [0,2,4,6]
-    starting_rows = [0,1,2,5,6,7]
+    starting_pos = [0, 2, 4, 6]
+    starting_rows = [0, 1, 2, 5, 6, 7]
     starting_rows.each do |row|
       row_adder = row % 2
-      color = (row > 2) ? :white : :black
+      color = (row <= 2) ? :black : :white
       starting_pos.each do |pos|
         coords = [row, pos + row_adder]
         self[*coords] = Piece.new(self, coords, color)
