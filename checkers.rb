@@ -32,7 +32,7 @@ class Checkers
       rescue BadSelectionError
         puts "Please select one of your pieces (type 'h' for help)"
         retry
-      rescue InvalidMoveError
+      rescue
         puts "Invalid move (type 'h' for help)"
         retry
       end
