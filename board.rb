@@ -1,4 +1,5 @@
 require_relative 'piece.rb'
+
 require 'colorize'
 require 'byebug'
 
