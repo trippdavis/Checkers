@@ -1,14 +1,14 @@
 require_relative 'piece.rb'
-
 require 'colorize'
 require 'byebug'
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :curser_pos
 
   def initialize( dup = false )
     @grid = Array.new(8) { Array.new(8) }
     populate_board unless dup
+    @curser_pos = [4, 4]
   end
 
   def [](y, x)
@@ -54,7 +54,11 @@ class Board
     grid.each_with_index do |row, row_i|
       str << "#{row_i} "
       row.each_with_index do |space, col_i|
-        background = ((row_i + col_i) % 2 == 0) ? :red : :black
+        if [row_i, col_i] == curser_pos
+          background = :yellow
+        else
+          background = ((row_i + col_i) % 2 == 0) ? :red : :black
+        end
         space_str = space.nil? ? "   " : " #{space.symbol} "
         str << space_str.colorize(:background => background)
       end

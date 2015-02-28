@@ -1,5 +1,7 @@
 require_relative 'board.rb'
 require_relative 'human_player.rb'
+require 'io/console'
+require 'byebug'
 
 class BadSelectionError < RuntimeError; end
 
@@ -15,6 +17,54 @@ class Checkers
     @current_player = player1
   end
 
+  def curser
+    @board = Board.new
+    until game_over?
+      puts "Select your start position"
+      begin
+        puts "\e[H\e[2J"
+        board.display
+        start_pos = move_curser.dup
+        piece = board[*start_pos]
+        if piece.nil? || piece.color != current_player.color
+          raise BadSelectionError
+        end
+        end_pos = move_curser.dup
+        piece.perform_moves([end_pos])
+      rescue BadSelectionError
+        puts "Please select one of your pieces (type 'h' for help)"
+        retry
+      rescue => e
+        puts e
+        retry
+      end
+      switch_player
+    end
+  end
+
+  def move_curser
+    loop do
+      movement = STDIN.getch
+      case movement
+      when "w"
+        @board.curser_pos[0] -= 1
+      when "a"
+        @board.curser_pos[1] -= 1
+      when "s"
+        @board.curser_pos[0] += 1
+      when "d"
+        @board.curser_pos[1] += 1
+      else
+        puts "\e[H\e[2J"
+        board.display
+        break
+      end
+      puts "\e[H\e[2J"
+      board.display
+    end
+
+    board.curser_pos
+  end
 
   def play
     @board = Board.new
@@ -36,8 +86,8 @@ class Checkers
         puts "Invalid move (type 'h' for help)"
         retry
       end
-
       switch_player
+      puts "\e[H\e[2J"
     end
 
   end
@@ -51,4 +101,11 @@ class Checkers
     board.pieces.all? { |piece| piece.color == :white } ||
     board.pieces.all? { |piece| piece.color == :black }
   end
+end
+
+
+
+if __FILE__ == $PROGRAM_NAME
+  game = Checkers.new
+  game.curser
 end
